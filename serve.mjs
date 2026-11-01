@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { parseFile } from 'music-metadata';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
-const FILE = path.join(dir, 'สมุดเทปมิกซ์.html');
+const FILE = path.join(dir, 'index.html');
 const DJ_FILE = path.join(dir, 'dj.html');
 const MUSIC = process.env.MUSIC_DIR || path.join(dir, 'music');
 const STATION = process.env.STATION_NAME || 'สถานีเพลงของเรา';

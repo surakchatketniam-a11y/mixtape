@@ -894,6 +894,7 @@ async function radioFetch(listening) {
 const radioTrack = j => ({ t:j.track.title, a:j.track.artist || j.station, file:true, radio:true, url:'/stream/' + j.track.id, dur:j.track.duration, startedAt:j.track.startedAt, by:j.track.by || '', img:j.track.cover ? '/api/cover/' + j.track.id : '' });
 function radioErr(e) {
   if (!location.protocol.startsWith('http')) return 'เปิดผ่านเซิร์ฟเวอร์ก่อน: node serve.mjs';
+  if (e.message === 'http 404') return 'สถานีวิทยุใช้ได้เฉพาะเมื่อเปิดผ่านเซิร์ฟเวอร์ของสถานี (เช่นในออฟฟิศ)';
   return e.message === 'no-music' ? 'ยังไม่มีเพลงในโฟลเดอร์ music (ใส่ไฟล์ .mp3 ลงไป)' : 'เชื่อมต่อสถานีไม่ได้';
 }
 async function radioRefresh() {
