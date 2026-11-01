@@ -1,0 +1,1068 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>สมุดเทปมิกซ์</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mali:wght@500;600&display=swap">
+<style>
+/* Layout concept: a binder opened flat. Left page = tape shelf (carousel of J-card boxes + track list).
+   Right page = ruled notebook holding a cassette deck, with masking-tape eject label and tape-deck keys. */
+:root{
+  --desk:#2a2438;
+  --cover:#17121f;
+  --shelf:#17786f;
+  --shelf-ink:#f4fbf9;
+  --paper:#f3f5f9;
+  --paper-line:#d3dcec;
+  --margin:#ef7b86;
+  --ink:#1d2433;
+  --ink-soft:#5a6479;
+  --accent:#ff5a22;
+  --track:#c9d2e3;
+  --key:#eef0f5;
+  --key-edge:#9ea9bf;
+  --deck:#cfd6e4;
+  --strip:#ead9a0;
+  --strip-ink:#4a3d17;
+  --case:#f1f3f7;
+  --case-ink:#1b2030;
+  --shell:#25282e;
+  --label:#f7f3e8;
+  --label-ink:#232323;
+  --y:#ffc533; --t:#17b3a6; --m:#e2417d;
+  --tapebrown:#3a2a20;
+  --font-ui:"IBM Plex Sans Thai","Noto Sans Thai",system-ui,sans-serif;
+  --font-hand:"Mali","Sarabun",cursive,system-ui,sans-serif;
+  --font-mono:"DM Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#0e0b16; --cover:#05040a; --shelf:#134e4a; --paper:#1b2230; --paper-line:#2a3550;
+    --margin:#a8505b; --ink:#e9edf5; --ink-soft:#9aa6bd; --track:#34405a;
+    --key:#2a3244; --key-edge:#0b0f18; --deck:#0f141d; --strip:#bfae72;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0e0b16; --cover:#05040a; --shelf:#134e4a; --paper:#1b2230; --paper-line:#2a3550;
+  --margin:#a8505b; --ink:#e9edf5; --ink-soft:#9aa6bd; --track:#34405a;
+  --key:#2a3244; --key-edge:#0b0f18; --deck:#0f141d; --strip:#bfae72;
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--desk);color:var(--ink);font-family:var(--font-ui);font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.stage{max-width:1120px;margin:0 auto;padding-block:clamp(16px,4vw,40px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mast{margin:0 0 18px;color:#f1eef8}
+.mast h1{margin:0;font-family:var(--font-hand);font-weight:600;font-size:clamp(24px,4vw,32px);line-height:1.2;text-wrap:balance}
+.mast p{margin:4px 0 0;font-family:var(--font-mono);font-size:12px;letter-spacing:.02em;color:#b9b2cc;max-width:70ch}
+
+.book{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;padding:10px;background:var(--cover);
+  border-radius:20px;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.page{position:relative;min-width:0;min-height:600px;padding:20px}
+.shelf{background:var(--shelf);color:var(--shelf-ink);border-radius:12px 0 0 12px;padding-right:34px;display:flex;flex-direction:column;gap:12px}
+.notebook{background:var(--paper);color:var(--ink);border-radius:0 12px 12px 0;padding-left:74px;padding-right:22px;
+  display:flex;flex-direction:column;gap:0;padding-top:12px;padding-bottom:20px;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--paper-line) 31px 32px);background-position:0 12px}
+.notebook::before{content:"";position:absolute;left:56px;top:0;bottom:0;width:2px;background:var(--margin);opacity:.8}
+.rings{position:absolute;left:50%;top:22px;bottom:22px;width:44px;transform:translateX(-50%);pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='24'%3E%3Cellipse cx='22' cy='12' rx='18' ry='4.2' fill='none' stroke='%23aeb4c0' stroke-width='2.6'/%3E%3Ccircle cx='9' cy='12' r='2.6' fill='%230c0a12'/%3E%3Ccircle cx='35' cy='12' r='2.6' fill='%230c0a12'/%3E%3C/svg%3E") repeat-y center top}
+
+/* shelf */
+.tabs{display:flex;gap:18px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.25)}
+.tab{background:none;border:0;padding:6px 0 9px;font-size:14px;font-weight:500;color:var(--shelf-ink);opacity:.7;position:relative}
+.tab[aria-selected="true"]{opacity:1}
+.tab[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:2px;background:var(--accent)}
+.rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;perspective:900px;
+  padding:22px calc(50% - 60px) 18px;margin-inline:-18px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.case{position:relative;flex:none;width:120px;aspect-ratio:2/3;scroll-snap-align:center;border:0;padding:0;overflow:hidden;
+  background:var(--case);color:var(--case-ink);text-align:left;border-radius:3px 7px 7px 3px;
+  box-shadow:0 8px 18px rgba(0,0,0,.35),inset -2px 0 0 rgba(0,0,0,.06);
+  transform:rotateY(-18deg) scale(.88);opacity:.82;transition:transform .35s,opacity .35s}
+.case[aria-pressed="true"]{transform:rotateY(0) scale(1.05);opacity:1}
+.case::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:var(--c1)}
+.case .ct{position:absolute;left:22px;right:10px;top:12px;font-family:var(--font-hand);font-weight:600;font-size:17px;line-height:1.2;text-wrap:balance}
+.case .cn{position:absolute;left:12px;right:0;bottom:0;height:32%;background:var(--c2);color:#fff;padding:10px 10px 8px 12px;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:0;font-family:var(--font-mono);font-size:11px;line-height:1.4}
+.case .art{position:absolute;left:12px;right:0;top:0;bottom:32%;background-size:cover;background-position:center}
+.case .art::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.85) 0,rgba(0,0,0,.65) 55%,rgba(0,0,0,.3) 100%)}
+.case.hasart .ct{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.9),0 0 8px rgba(0,0,0,.7)}
+.case .cn b{font-weight:500}
+.case .cn i{font-style:normal;opacity:.8}
+
+.info{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;min-height:48px}
+.info h2{margin:0;font-family:var(--font-hand);font-weight:600;font-size:20px;line-height:1.25}
+.info p{margin:0;font-size:13px;opacity:.85}
+.btn{border:0;border-radius:8px;padding:8px 14px;background:var(--case);color:var(--case-ink);font-weight:500;font-size:14px}
+.tracks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;max-height:262px;overflow:auto;scrollbar-width:thin}
+.row{display:flex;align-items:stretch;gap:4px;border-radius:8px;background:rgba(255,255,255,.1)}
+.row.cur{background:var(--case);color:var(--case-ink)}
+.pick{flex:1;min-width:0;display:flex;align-items:center;gap:12px;text-align:left;background:none;border:0;padding:8px 6px 8px 12px}
+.no{font-family:var(--font-mono);font-size:12px;width:24px;flex:none;opacity:.8}
+.tt{flex:1;min-width:0;display:flex;flex-direction:column}
+.tt b{font-weight:500;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tt em{font-style:normal;font-size:12px;opacity:.75;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.du{font-family:var(--font-mono);font-size:12px;opacity:.85;flex:none}
+.favb{flex:none;width:42px;background:none;border:0;display:grid;place-items:center;opacity:.8}
+.favb svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+.favb[aria-pressed="true"]{opacity:1;color:var(--m)}
+.favb[aria-pressed="true"] svg{fill:currentColor}
+.none{padding:18px 6px;font-size:14px;opacity:.85;text-wrap:balance}
+.drop{border:2px dashed rgba(255,255,255,.5);border-radius:14px;padding:30px 20px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.drop p{margin:0;max-width:34ch;text-wrap:balance}
+.drop small{opacity:.8;font-size:12px}
+.spotbox{padding:22px 18px}
+.spotbox input{width:100%;max-width:340px;padding:9px 12px;border-radius:8px;border:0;font-family:var(--font-mono);font-size:13px;background:var(--case);color:var(--case-ink)}
+.spotbox code{font-family:var(--font-mono);font-size:12px;background:rgba(0,0,0,.28);padding:2px 6px;border-radius:4px;word-break:break-all}
+body.dragging .shelf{outline:3px dashed var(--accent);outline-offset:-6px}
+
+/* notebook */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;height:64px}
+.strip{border:0;background:var(--strip);color:var(--strip-ink);font-family:var(--font-hand);font-weight:600;font-size:14px;
+  padding:9px 22px;display:inline-flex;align-items:center;gap:8px;transform:rotate(-1.5deg);
+  clip-path:polygon(0 0,100% 0,98% 25%,100% 50%,98% 75%,100% 100%,0 100%,2% 75%,0 50%,2% 25%);box-shadow:0 1px 0 rgba(0,0,0,.15)}
+.strip svg{width:16px;height:16px;fill:currentColor}
+.heart{width:44px;height:44px;border-radius:50%;border:0;background:var(--paper);display:grid;place-items:center;color:var(--ink-soft)}
+.heart svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2}
+.heart[aria-pressed="true"]{color:var(--m)}
+.heart[aria-pressed="true"] svg{fill:currentColor}
+.heart[hidden]{display:none}
+
+.deck{position:relative;height:288px;display:flex;flex-direction:column;justify-content:center;background:var(--deck);border-radius:14px;padding:14px;box-shadow:inset 0 3px 10px rgba(0,0,0,.28)}
+.cassette{width:100%;max-width:380px;margin:0 auto;transition:transform .5s cubic-bezier(.3,1.3,.5,1),opacity .35s;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+.cassette svg{display:block;width:100%;height:auto}
+.deck.ejected .cassette{opacity:0;transform:translateY(-22px) rotate(-3deg);pointer-events:none}
+.empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;font-family:var(--font-hand);font-weight:500;color:var(--ink-soft);opacity:0;transition:opacity .3s;pointer-events:none}
+.deck.ejected .empty{opacity:1}
+.spin{transform-box:fill-box;transform-origin:center}
+.cassette.playing .spin{animation:spin 2.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.now{margin:0;height:64px;overflow:hidden;font-family:var(--font-hand);font-weight:600;font-size:22px;line-height:32px}
+.now .nt{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+.now small{display:block;font-family:var(--font-mono);font-weight:400;font-size:12px;line-height:32px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog{height:64px;display:grid;grid-template-rows:32px 32px;align-items:center}
+.times{height:32px;align-items:center;display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.seek{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;margin:0;cursor:pointer;--p:0%}
+.seek::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,var(--accent) var(--p),var(--track) var(--p))}
+.seek::-moz-range-track{height:6px;border-radius:3px;background:var(--track)}
+.seek::-moz-range-progress{height:6px;border-radius:3px;background:var(--accent)}
+.seek::-webkit-slider-thumb{-webkit-appearance:none;box-sizing:border-box;width:14px;height:20px;margin-top:-7px;border-radius:3px;background:var(--ink);border:2px solid var(--paper)}
+.seek::-moz-range-thumb{box-sizing:border-box;width:14px;height:20px;border-radius:3px;background:var(--ink);border:2px solid var(--paper)}
+.seek:disabled{opacity:.4;cursor:default}
+
+.keys{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;height:64px;align-items:center}
+.key{height:56px;border-radius:8px;border:1px solid var(--key-edge);border-bottom-width:5px;background:var(--key);color:var(--ink);
+  display:grid;place-items:center;transition:transform .08s,border-bottom-width .08s}
+.key svg{width:24px;height:24px;fill:currentColor}
+.key:active:not(:disabled),.key[aria-pressed="true"]{transform:translateY(4px);border-bottom-width:1px}
+.key.play{color:var(--accent)}
+.key.play[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:#bd3d0f}
+.key:disabled{opacity:.45;cursor:default}
+.aux{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;min-height:64px}
+.modes{display:flex;align-items:center;gap:8px}
+.mode:disabled{opacity:.35;cursor:default}
+.pick.static{cursor:default}
+.reqbox{display:flex;gap:8px;flex-wrap:wrap}
+.reqbox>input{flex:1 1 120px}
+.wishform{flex-basis:100%;display:flex;gap:8px;flex-wrap:wrap}
+.wishform input{flex:1 1 140px}
+.reqbox input{flex:1;min-width:0;padding:8px 12px;border-radius:8px;border:0;background:var(--case);color:var(--case-ink);font:inherit;font-size:14px}
+.reqbox input::placeholder{color:#6a7284}
+.infobtns{display:flex;gap:8px;flex-wrap:wrap}
+.reqb{align-self:center;margin-right:8px;padding:5px 12px;font-size:13px}
+.reqb:disabled{opacity:.55;cursor:default}.mode{position:relative;flex:none;width:38px;height:38px;border-radius:50%;border:0;background:var(--paper);display:grid;place-items:center;color:var(--ink-soft)}
+.mode svg{width:19px;height:19px;fill:currentColor}
+.mode[aria-pressed="true"]{color:var(--accent)}
+.mode b{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:var(--accent);color:#fff;font-size:9px;font-weight:700;font-style:normal;line-height:14px;text-align:center}
+.counter{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-soft)}
+.counter output{background:#15171b;color:#ff8a57;font-family:var(--font-mono);font-size:20px;letter-spacing:.2em;padding:3px 8px 3px 12px;border-radius:5px;font-variant-numeric:tabular-nums;box-shadow:inset 0 2px 4px rgba(0,0,0,.6)}
+.vol{display:flex;align-items:center;gap:8px;color:var(--ink-soft);font-size:12px}
+.vol svg{width:20px;height:20px;fill:currentColor;flex:none}
+.vol .seek{width:120px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:#15171b;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:20;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:820px){
+  .book{grid-template-columns:1fr}
+  .rings{display:none}
+  .notebook{order:-1;border-radius:12px 12px 0 0;padding-left:50px;padding-right:16px}
+  .notebook::before{left:34px}
+  .shelf{border-radius:0 0 12px 12px;padding-right:20px}
+  .page{min-height:0}
+  .tracks{max-height:none}
+  .case{width:108px}
+  .rail{padding-inline:calc(50% - 54px)}
+  .vol .seek{width:96px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
+</style>
+
+<main class="stage">
+  <header class="mast">
+    <h1>สมุดเทปมิกซ์</h1>
+    <p>ต้นแบบเครื่องเล่นเทป · เพลงตัวอย่างสร้างจากเสียงสังเคราะห์ในเบราว์เซอร์ · ใส่ไฟล์เพลงของคุณเองได้</p>
+  </header>
+
+  <div class="book">
+    <section class="page shelf" aria-label="ชั้นเทป">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" data-tab="samples" aria-selected="true">ตลับตัวอย่าง</button>
+        <button class="tab" role="tab" data-tab="favs" aria-selected="false">เพลงโปรด</button>
+        <button class="tab" role="tab" data-tab="mine" aria-selected="false">เทปของฉัน</button>
+        <button class="tab" role="tab" data-tab="radio" aria-selected="false">วิทยุ</button>
+        <button class="tab" role="tab" data-tab="spot" aria-selected="false">Spotify</button>
+      </div>
+      <div class="rail" id="rail"></div>
+      <div class="drop" id="drop" hidden>
+        <p>ลากไฟล์เพลงมาวางที่นี่ หรือเลือกจากเครื่องของคุณ</p>
+        <button class="btn" type="button" data-pick>เลือกไฟล์เพลง</button>
+        <small>ไฟล์เล่นอยู่ในเบราว์เซอร์ของคุณเท่านั้น ไม่ถูกอัปโหลดไปที่ไหน</small>
+      </div>
+      <div class="drop spotbox" id="spotPanel" hidden>
+        <p><b>เชื่อมต่อ Spotify</b><br>ต้องใช้บัญชี Premium</p>
+        <input id="spotCid" placeholder="Spotify Client ID" aria-label="Spotify Client ID" autocomplete="off" spellcheck="false">
+        <small>ตั้ง Redirect URI ในแอป Spotify เป็น<br><code id="spotRedir"></code></small>
+        <button class="btn" type="button" id="spotLogin">เข้าสู่ระบบด้วย Spotify</button>
+        <small>สร้างแอปที่ developer.spotify.com/dashboard เลือก Web Playback SDK ไม่ต้องใช้ Client Secret</small>
+      </div>
+      <div class="reqbox" id="reqBox" hidden>
+        <input id="reqName" placeholder="ชื่อของคุณ (ไม่บังคับ)" maxlength="30" aria-label="ชื่อของคุณ" autocomplete="off">
+        <input id="reqQ" type="search" placeholder="ค้นหาเพลงที่อยากขอ" aria-label="ค้นหาเพลงที่อยากขอ" autocomplete="off">
+        <div class="wishform" id="wishForm" hidden>
+          <input id="wishTitle" placeholder="ชื่อเพลงที่อยากฟัง" maxlength="80" aria-label="ชื่อเพลงที่อยากขอ" autocomplete="off">
+          <input id="wishArtist" placeholder="ศิลปิน (ไม่บังคับ)" maxlength="60" aria-label="ศิลปิน" autocomplete="off">
+          <button class="btn" type="button" data-wish-send>ส่งคำขอ</button>
+          <button class="btn" type="button" data-wish-cancel>ยกเลิก</button>
+        </div>
+      </div>
+      <div class="info" id="info"></div>
+      <ol class="tracks" id="tracks"></ol>
+      <input type="file" id="file" accept="audio/*,.mp3,.m4a,.wav,.ogg,.flac,.aac" multiple hidden>
+    </section>
+
+    <div class="rings" aria-hidden="true"></div>
+
+    <section class="page notebook" aria-label="เครื่องเล่น">
+      <div class="topbar">
+        <button class="strip" id="eject" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17h14v2H5zM12 5l7 10H5z"/></svg><span id="ejectTxt">นำตลับออก</span></button>
+        <button class="heart" id="fav" type="button" aria-pressed="false" aria-label="เก็บเป็นเพลงโปรด"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>
+      </div>
+
+      <div class="deck" id="deck">
+        <div class="empty" id="empty">ยังไม่มีตลับในเครื่อง<br>แตะเพลงบนชั้นเพื่อใส่ตลับ</div>
+        <div class="cassette" id="cassette">
+          <svg viewBox="0 0 360 232" role="img" aria-label="ตลับเทป">
+            <defs>
+              <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".14"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+              <clipPath id="lblClip"><rect x="26" y="18" width="308" height="124" rx="7"/></clipPath>
+              <clipPath id="artClip"><rect x="268" y="42" width="58" height="58" rx="5"/></clipPath>
+            </defs>
+            <rect x="2" y="2" width="356" height="228" rx="16" fill="var(--shell)"/>
+            <rect x="2" y="2" width="356" height="228" rx="16" fill="url(#gloss)"/>
+            <rect x="26" y="18" width="308" height="124" rx="7" fill="var(--label)"/>
+            <g clip-path="url(#lblClip)">
+              <rect x="20" y="123" width="320" height="6" fill="var(--y)"/>
+              <rect x="20" y="129" width="320" height="6" fill="var(--t)"/>
+              <rect x="20" y="135" width="320" height="10" fill="var(--m)"/>
+            </g>
+            <text id="cSide" x="40" y="30" font-family="DM Mono, monospace" font-size="9" fill="#232323" opacity=".6" letter-spacing="1">SIDE A</text>
+            <text id="cLen" x="320" y="30" text-anchor="end" font-family="DM Mono, monospace" font-size="9" fill="#232323" opacity=".6">0:00</text>
+            <g id="cArtG" display="none"><image id="cArt" x="268" y="42" width="58" height="58" preserveAspectRatio="xMidYMid slice" clip-path="url(#artClip)"/><rect x="268" y="42" width="58" height="58" rx="5" fill="none" stroke="#232323" stroke-opacity=".25"/></g>
+            <text id="cTitle" x="40" y="54" font-family="Mali, cursive, sans-serif" font-weight="600" font-size="20" fill="#232323">Title</text>
+            <text id="cArtist" x="40" y="74" font-family="Mali, cursive, sans-serif" font-size="11" fill="#232323" opacity=".75">Artist</text>
+            <rect x="100" y="80" width="160" height="42" rx="21" fill="#0e1013" stroke="#434955" stroke-width="1.5"/>
+            <circle id="packL" cx="140" cy="101" r="17" fill="#7a5a40" stroke="#9b7653" stroke-width=".8"/>
+            <circle id="packR" cx="220" cy="101" r="17" fill="#7a5a40" stroke="#9b7653" stroke-width=".8"/>
+            <g transform="translate(140 101)"><g class="spin">
+              <circle r="9.5" fill="#f4f1e6"/><circle r="6" fill="#15171b"/>
+              <rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(60)"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(120)"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(180)"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(240)"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(300)"/>
+            </g></g>
+            <g transform="translate(220 101)"><g class="spin">
+              <circle r="9.5" fill="#f4f1e6"/><circle r="6" fill="#15171b"/>
+              <rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(60)"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(120)"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(180)"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(240)"/><rect x="-1" y="-6.6" width="2" height="3" fill="#e9e6dc" transform="rotate(300)"/>
+            </g></g>
+            <path d="M86 230 L100 164 H260 L274 230 Z" fill="#15171b"/>
+            <circle cx="122" cy="200" r="8" fill="var(--shell)"/><circle cx="238" cy="200" r="8" fill="var(--shell)"/>
+            <rect x="164" y="190" width="9" height="9" fill="var(--shell)"/><rect x="187" y="190" width="9" height="9" fill="var(--shell)"/>
+            <g fill="#3b3f47"><circle cx="16" cy="16" r="5"/><circle cx="344" cy="16" r="5"/><circle cx="16" cy="216" r="5"/><circle cx="344" cy="216" r="5"/></g>
+            <g stroke="#14161a" stroke-width="1.4"><path d="M13 16h6M341 16h6M13 216h6M341 216h6"/></g>
+          </svg>
+        </div>
+      </div>
+
+      <p class="now" id="now"></p>
+
+      <div class="prog">
+        <input class="seek" id="seek" type="range" min="0" max="1000" value="0" aria-label="ตำแหน่งในเพลง">
+        <div class="times"><span id="tcur">0:00</span><span id="tdur">0:00</span></div>
+      </div>
+
+      <div class="keys">
+        <button class="key" id="kPrev" type="button" aria-label="เพลงก่อนหน้า"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+        <button class="key" id="kBack" type="button" aria-label="ย้อนกลับ 10 วินาที"><svg viewBox="0 0 24 24"><path d="M11 6v12L2 12zM22 6v12l-9-6z"/></svg></button>
+        <button class="key play" id="kPlay" type="button" aria-pressed="false" aria-label="เล่น"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
+        <button class="key" id="kFwd" type="button" aria-label="ข้ามไป 10 วินาที"><svg viewBox="0 0 24 24"><path d="M13 6v12l9-6zM2 6v12l9-6z"/></svg></button>
+        <button class="key" id="kNext" type="button" aria-label="เพลงถัดไป"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5l11 7L4 19z"/></svg></button>
+      </div>
+
+      <div class="aux">
+        <div class="modes">
+          <button class="mode" id="kShuffle" type="button" aria-pressed="false" aria-label="สุ่มเพลง"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.41-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 10.5l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
+          <button class="mode" id="kRepeat" type="button" aria-pressed="false" aria-label="วนซ้ำ: ปิด"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg><b id="repOne" hidden>1</b></button>
+        </div>
+        <div class="counter"><span>นับเทป</span><output id="counter">000</output></div>
+        <label class="vol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9zM16 8.5a5 5 0 0 1 0 7l-1.4-1.4a3 3 0 0 0 0-4.2zM19 5.5a9 9 0 0 1 0 13l-1.4-1.4a7 7 0 0 0 0-10.2z"/></svg><span>เสียง</span><input class="seek" id="vol" type="range" min="0" max="100" value="70" aria-label="ระดับเสียง"></label>
+      </div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = s => { if (!isFinite(s) || s <= 0) return '0:00'; s = Math.floor(s); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); };
+const MAJ = [0,4,7,12,16,19], MIN = [0,3,7,12,15,19];
+const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+const LEADG = { sawtooth:.045, square:.035, triangle:.09, sine:.1 };
+
+/* ---------- sample library (all music is generated in the browser) ---------- */
+const PR_A = [[0,'m'],[8,'M'],[3,'M'],[10,'M']];   // i VI III VII
+const PR_B = [[0,'m'],[5,'m'],[10,'M'],[3,'M']];   // i iv VII III
+const PR_C = [[0,'M'],[9,'m'],[5,'M'],[7,'M']];    // I vi IV V
+const PR_D = [[0,'M'],[7,'M'],[9,'m'],[5,'M']];    // I V vi IV
+const PR_E = [[0,'m'],[8,'M'],[3,'M'],[10,'M']];
+const T = (t,a,bpm,root,prog,reps,arp,lead,drums,swing,lp,bassW) =>
+  ({ t, a, bpm, root, prog, reps, arp, lead, drums, swing: swing||0, lp: lp||3000, bassW: bassW||'triangle' });
+const TAPES = [
+  { id:'drive', name:'ขับรถกลางคืน', c1:'#e2417d', c2:'#2b2d5a', tracks:[
+    T('Neon Lane','Soi Seven',104,57,PR_A,8,'0.12.32.0.1.2.1.','sawtooth','four',0,2600),
+    T('Rain on the Overpass','Soi Seven',86,50,PR_B,6,'0..2..3.1..2..1.','triangle','half',.12,3000),
+    T('Tail Lights','Soi Seven',112,52,PR_A,8,'0.2.4.2.0.2.5.3.','sawtooth','four',0,2800),
+    T('Last Exit','Soi Seven',96,55,PR_E,8,'..0...2...1...3.','sawtooth','half',.06,2400)
+  ]},
+  { id:'sunday', name:'บ่ายวันอาทิตย์', c1:'#ffc533', c2:'#b9603a', tracks:[
+    T('Porch Light','Kettle & Moth',92,48,PR_C,8,'0.1.2.3.4.3.2.1.','triangle','lofi',.18,2800),
+    T('Slow Kettle','Kettle & Moth',80,53,PR_C,6,'0..2..3.1..2..1.','sine','lofi',.18,2600),
+    T('Window Seat','Kettle & Moth',100,55,PR_C,8,'0.12.32.0.1.2.1.','triangle','half',.1,3000),
+    T('Dust on the Sill','Kettle & Moth',74,50,PR_C,6,'2..0..1.2..4..3.','sine','lofi',.2,2400)
+  ]},
+  { id:'station', name:'สถานีเก่า', c1:'#17b3a6', c2:'#1c3b57', tracks:[
+    T('Platform 9','Fern Radio',132,60,PR_D,10,'0123432101234321','square','four',0,5200,'square'),
+    T('Ticket Window','Fern Radio',120,57,PR_A,10,'0.2.4.2.0.2.5.3.','square','four',0,5200,'square'),
+    T('Last Train 23:40','Fern Radio',140,62,PR_D,10,'0123432101234321','square','four',0,5200,'square'),
+    T('Signal Lost','Fern Radio',108,52,PR_E,9,'0.1.2.3.4.3.2.1.','square','four',0,4800,'square')
+  ]},
+  { id:'rain', name:'ฝนตกเบาๆ', c1:'#7a8cff', c2:'#2a2f55', tracks:[
+    T('Umbrella Weather','Soft Static',70,52,[[0,'m'],[5,'m'],[10,'M'],[3,'M']],6,'..0...2...1...3.','triangle','half',.2,2200),
+    T('Puddles','Soft Static',78,57,[[0,'m'],[5,'m'],[10,'M'],[3,'M']],6,'0..2..3.1..2..1.','sine','lofi',.2,2200),
+    T('Gutter Song','Soft Static',66,50,[[0,'m'],[8,'M'],[3,'M'],[10,'M']],5,'2..0..1.2..4..3.','triangle','none',0,2000),
+    T('Petrichor','Soft Static',72,55,[[0,'m'],[5,'m'],[10,'M'],[3,'M']],6,'0.1.2.3.4.3.2.1.','sine','half',.1,2200)
+  ]}
+];
+TAPES.forEach(tp => tp.tracks.forEach(k => { k.dur = k.reps * k.prog.length * 16 * (60 / k.bpm / 4); }));
+const MINE = { id:'mine', name:'เทปของฉัน', c1:'#ff5a22', c2:'#3a2a20', tracks:[] };
+let SPOT = { id:'spot', name:'Spotify', c1:'#1db954', c2:'#121212', tracks:[] };
+const RADIO = { id:'radio', name:'สถานีวิทยุ', c1:'#ff5a22', c2:'#3a2a20', tracks:[], live:true };
+const tapeById = id => id === 'mine' ? MINE : id === 'spot' ? SPOT : id === 'radio' ? RADIO : TAPES.find(t => t.id === id);
+const tapeTotal = tp => tp.tracks.reduce((s,k) => s + (k.dur||0), 0);
+const sideOf = (tp,i) => { const n = tp.tracks.length, h = Math.ceil(n/2); return i < h ? {s:'A', n:i+1} : {s:'B', n:i-h+1}; };
+
+/* ---------- state ---------- */
+const P = { tape:null, idx:0, trk:null, file:false, spot:false, radioLive:false, pos:0, dur:0, playing:false, inserted:false, last:null };
+let tab = 'samples', selTape = 'drive', dragging = false;
+let favs = []; try { favs = JSON.parse(localStorage.getItem('mixtape-favs') || '[]'); } catch(e) {}
+const saveFavs = () => { try { localStorage.setItem('mixtape-favs', JSON.stringify(favs)); } catch(e) {} };
+let shuffleOn = false, repeatMode = 'off';
+try { shuffleOn = localStorage.getItem('mixtape-shuffle') === '1'; const r = localStorage.getItem('mixtape-repeat'); if (r === 'all' || r === 'one') repeatMode = r; } catch(e) {}
+let volume = .7; try { const v = parseFloat(localStorage.getItem('mixtape-vol')); if (v >= 0 && v <= 1) volume = v; } catch(e) {}
+
+const el = {
+  rail:$('#rail'), drop:$('#drop'), info:$('#info'), tracks:$('#tracks'), file:$('#file'),
+  deck:$('#deck'), cass:$('#cassette'), now:$('#now'), seek:$('#seek'), vol:$('#vol'),
+  tcur:$('#tcur'), tdur:$('#tdur'), counter:$('#counter'), eject:$('#eject'), ejectTxt:$('#ejectTxt'),
+  fav:$('#fav'), play:$('#kPlay'), playIcon:$('#playIcon'),
+  cArt:$('#cArt'), cArtG:$('#cArtG'), cTitle:$('#cTitle'), cArtist:$('#cArtist'), cSide:$('#cSide'), cLen:$('#cLen'), packL:$('#packL'), packR:$('#packR'),
+  spotPanel:$('#spotPanel'), spotCid:$('#spotCid'), spotRedir:$('#spotRedir'), spotLogin:$('#spotLogin'),
+  toast:$('#toast'), shuf:$('#kShuffle'), rep:$('#kRepeat'), repOne:$('#repOne')
+};
+let toastT;
+const toast = m => { el.toast.textContent = m; el.toast.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => el.toast.classList.remove('show'), 2600); };
+
+/* ---------- audio: synth engine ---------- */
+let ctx = null, master = null, noiseBuf = null;
+const S = { bus:null, lp:null, timer:null, anchorStep:0, anchorTime:0, basePos:0, nextStep:0, total:0, sd:0 };
+function ensureCtx() {
+  if (ctx) return;
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  master = ctx.createGain(); master.gain.value = volume * .9;
+  const comp = ctx.createDynamicsCompressor();
+  master.connect(comp); comp.connect(ctx.destination);
+  noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+  const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+}
+function note(type, freq, t, dur, gain, dest) {
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(.0001, t);
+  g.gain.exponentialRampToValueAtTime(gain, t + .008);
+  g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + .05);
+}
+function padNote(freq, t, dur, gain, dest) {
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(.0001, t);
+  g.gain.linearRampToValueAtTime(gain, t + .25);
+  g.gain.setValueAtTime(gain, t + dur - .35);
+  g.gain.linearRampToValueAtTime(.0001, t + dur);
+  o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + .05);
+}
+function noiseHit(t, dur, gain, hpFreq, dest) {
+  const s = ctx.createBufferSource(); s.buffer = noiseBuf;
+  const f = ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = hpFreq;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  s.connect(f); f.connect(g); g.connect(dest); s.start(t, Math.random() * .5); s.stop(t + dur + .02);
+}
+function kick(t, dest) {
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'sine'; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(45, t + .12);
+  g.gain.setValueAtTime(.55, t); g.gain.exponentialRampToValueAtTime(.001, t + .26);
+  o.connect(g); g.connect(dest); o.start(t); o.stop(t + .3);
+}
+const DRUMS = {
+  four:{ k:[0,4,8,12], s:[4,12], h:[2,6,10,14] },
+  half:{ k:[0,10], s:[8], h:[2,6,10,14] },
+  lofi:{ k:[0,7,10], s:[8], h:[2,4,6,10,12,14] },
+  none:{ k:[], s:[], h:[] }
+};
+function timeOf(step) {
+  const k = P.trk;
+  return S.anchorTime + (step - S.anchorStep) * S.sd + ((step % 2) ? k.swing * S.sd : 0);
+}
+function scheduleStep(step, t) {
+  const k = P.trk, sd = S.sd, bus = S.bus;
+  const bar = Math.floor(step / 16), s = step % 16;
+  const chord = k.prog[bar % k.prog.length];
+  const base = k.root + chord[0], iv = chord[1] === 'm' ? MIN : MAJ;
+  if (s === 0) for (let i = 0; i < 3; i++) padNote(mtof(base + iv[i]), t, 16 * sd, .035, bus);
+  if (s === 0 || s === 8) note(k.bassW, mtof(base - 12), t, sd * (s === 0 ? 6 : 5), .22, bus);
+  if (s === 6 || s === 14) note(k.bassW, mtof(base - 12), t, sd * 1.8, .15, bus);
+  const c = k.arp[s];
+  if (c !== '.') note(k.lead, mtof(base + 12 + iv[+c]), t, sd * .95, LEADG[k.lead], bus);
+  const d = DRUMS[k.drums];
+  if (d.k.includes(s)) kick(t, bus);
+  if (d.s.includes(s)) noiseHit(t, .16, .17, 1400, bus);
+  if (d.h.includes(s)) noiseHit(t, .04, k.drums === 'four' ? .06 : .04, 7500, bus);
+}
+function tick() {
+  while (S.nextStep < S.total && timeOf(S.nextStep) < ctx.currentTime + .15) {
+    scheduleStep(S.nextStep, timeOf(S.nextStep));
+    S.nextStep++;
+  }
+}
+function startSynth(pos) {
+  const k = P.trk;
+  S.sd = 60 / k.bpm / 4;
+  S.total = k.reps * k.prog.length * 16;
+  S.anchorStep = Math.round(pos / S.sd);
+  S.basePos = S.anchorStep * S.sd;
+  S.anchorTime = ctx.currentTime + .06;
+  S.nextStep = S.anchorStep;
+  S.bus = ctx.createGain(); S.lp = ctx.createBiquadFilter();
+  S.lp.type = 'lowpass'; S.lp.frequency.value = k.lp;
+  S.bus.connect(S.lp); S.lp.connect(master);
+  S.timer = setInterval(tick, 25); tick();
+}
+function stopSynth() {
+  clearInterval(S.timer); S.timer = null;
+  const b = S.bus, l = S.lp; S.bus = S.lp = null;
+  if (b) { b.gain.setTargetAtTime(0, ctx.currentTime, .015); setTimeout(() => { try { b.disconnect(); l.disconnect(); } catch(e) {} }, 300); }
+}
+
+/* ---------- audio: local files ---------- */
+const audio = new Audio(); audio.preload = 'metadata'; audio.volume = volume;
+audio.addEventListener('loadedmetadata', () => { if (P.file && P.trk) {
+  if (P.trk.radio) { audio.currentTime = Math.max(0, (Date.now() + clockSkew - P.trk.startedAt) / 1000); P.dur = P.trk.dur || audio.duration || 0; }
+  else { P.dur = audio.duration || 0; P.trk.dur = P.dur; }
+  setLabel(); paint(curPos()); renderInfo(); renderTracks(); } });
+audio.addEventListener('ended', () => { if (P.file) onEnded(); });
+audio.addEventListener('error', () => { if (P.file && audio.src) { P.playing = false; sync(); toast('เปิดไฟล์นี้ไม่ได้ ลองไฟล์อื่น'); } });
+
+/* ---------- transport ---------- */
+function curPos() {
+  if (!P.inserted || !P.trk) return 0;
+  if (P.file) return audio.currentTime || 0;
+  if (P.spot) return Math.min(P.dur || 0, P.pos + (P.playing ? (performance.now() - spotT) / 1000 : 0));
+  if (P.playing && S.timer) return Math.min(P.dur, S.basePos + Math.max(0, ctx.currentTime - S.anchorTime));
+  return P.pos;
+}
+function hardStop() {
+  P.radioLive = false;
+  if (!P.file && S.timer) stopSynth();
+  if (P.spot && spotPlayer) spotPlayer.pause();
+  audio.pause(); P.playing = false;
+}
+function setTrack(tid, i, auto) {
+  const tape = tapeById(tid); if (!tape || !tape.tracks[i]) return;
+  hardStop();
+  P.tape = tape; P.idx = i; P.trk = tape.tracks[i]; P.file = !!P.trk.file; P.spot = !!P.trk.uri; P.pos = 0; P.inserted = true;
+  P.dur = P.trk.dur || 0;
+  if (P.file && P.trk.url) { audio.src = P.trk.url; audio.load(); }
+  setLabel(); refreshDeck(); renderTracks(); paint(0); sync();
+  if (auto) play();
+}
+function play() {
+  if (!P.inserted || !P.trk) return;
+  if (P.spot) { spotPlay(); return; }
+  if (P.trk.radio && !P.radioLive) { radioTune(); return; }
+  if (P.file) {
+    P.playing = true;
+    const pr = audio.play();
+    if (pr && pr.catch) pr.catch(() => { P.playing = false; sync(); });
+  } else {
+    ensureCtx(); ctx.resume();
+    startSynth(P.pos >= P.dur - .05 ? 0 : P.pos);
+    P.playing = true;
+  }
+  sync();
+}
+function pause() {
+  if (!P.inserted || !P.playing) return;
+  if (P.spot) { P.pos = curPos(); if (spotPlayer) spotPlayer.pause(); P.playing = false; sync(); paint(P.pos); return; }
+  if (P.trk && P.trk.radio) P.radioLive = false;
+  if (P.file) { audio.pause(); P.pos = audio.currentTime; }
+  else { P.pos = curPos(); stopSynth(); }
+  P.playing = false; sync(); paint(P.pos);
+}
+function seekTo(sec) {
+  if (!P.inserted) return;
+  sec = Math.max(0, Math.min(P.dur || 0, sec));
+  if (P.spot) { if (spotPlayer && spotCtx === P.tape && spotCur === P.trk.uri) spotPlayer.seek(sec * 1000); P.pos = sec; spotT = performance.now(); }
+  else if (P.file) { audio.currentTime = sec; P.pos = sec; }
+  else { const was = P.playing; if (was) stopSynth(); P.pos = sec; if (was) startSynth(sec); }
+  paint(sec);
+}
+function step(d, auto) { const n = P.tape.tracks.length; setTrack(P.tape.id, (P.idx + d + n) % n, auto); }
+function nextIndex() {
+  const n = P.tape.tracks.length;
+  if (n <= 1) return P.idx;
+  if (shuffleOn) { let i; do { i = Math.floor(Math.random() * n); } while (i === P.idx); return i; }
+  return (P.idx + 1) % n;
+}
+function onEnded() {
+  if (P.trk && P.trk.radio) { radioTune(); return; }
+  if (repeatMode === 'one') { seekTo(0); play(); return; }
+  if (!shuffleOn && repeatMode === 'off' && P.idx === P.tape.tracks.length - 1) { pause(); seekTo(0); return; }
+  setTrack(P.tape.id, nextIndex(), true);
+}
+function setShuffle(v, push = true) {
+  shuffleOn = v; el.shuf.setAttribute('aria-pressed', v ? 'true' : 'false');
+  try { localStorage.setItem('mixtape-shuffle', v ? '1' : '0'); } catch(e) {}
+  if (push && P.spot && spotCtx === P.tape && spotDev) spApi('/me/player/shuffle?state=' + v + '&device_id=' + spotDev, { method:'PUT' }).catch(() => {});
+}
+function setRepeat(m, push = true) {
+  if (push && P.spot && spotCtx === P.tape && spotDev) spApi('/me/player/repeat?state=' + SP_REPEAT[m] + '&device_id=' + spotDev, { method:'PUT' }).catch(() => {});
+  repeatMode = m; el.rep.setAttribute('aria-pressed', m !== 'off' ? 'true' : 'false');
+  el.rep.setAttribute('aria-label', 'วนซ้ำ: ' + (m === 'off' ? 'ปิด' : m === 'all' ? 'ทั้งตลับ' : 'เพลงเดียว'));
+  el.repOne.hidden = m !== 'one';
+  try { localStorage.setItem('mixtape-repeat', m); } catch(e) {}
+}
+function eject() {
+  if (!P.trk) return;
+  if (!P.inserted) { P.inserted = true; refreshDeck(); paint(P.pos); sync(); return; }
+  pause(); P.pos = P.file ? audio.currentTime : P.pos; P.inserted = false; refreshDeck(); sync();
+}
+
+/* ---------- UI ---------- */
+function fitText(node, text, size, min, maxW) {
+  node.textContent = text; node.setAttribute('font-size', size);
+  let s = size;
+  while (s > min && node.getComputedTextLength() > maxW) { s -= .5; node.setAttribute('font-size', s); }
+  let t = text;
+  while (t.length > 1 && node.getComputedTextLength() > maxW) { t = t.slice(0, -1); node.textContent = t.trimEnd() + '…'; }
+}
+const ICON_PLAY ='<path d="M8 5v14l11-7z"/>', ICON_PAUSE = '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
+function setLabel() {
+  const k = P.trk, tp = P.tape; if (!k) return;
+  const img = k.img || '', maxW = img ? 218 : 280;
+  fitText(el.cTitle, k.t, 20, 14, maxW);
+  fitText(el.cArtist, k.a, 11, 8, maxW);
+  if (img) el.cArt.setAttribute('href', img); else el.cArt.removeAttribute('href');
+  el.cArtG.setAttribute('display', img ? 'inline' : 'none');
+  el.cSide.textContent = 'SIDE ' + sideOf(tp, P.idx).s;
+  el.cLen.textContent = P.dur ? fmt(P.dur) : '--:--';
+  el.now.innerHTML = '<span class="nt">' + esc(k.t) + '</span><small>' + esc(tp.name) + ' · ' + (k.radio ? 'ออกอากาศสด' + (k.by ? ' · ขอโดย ' + esc(k.by) : '') : 'เพลงที่ ' + (P.idx + 1) + ' จาก ' + tp.tracks.length) + '</small>';
+  el.tdur.textContent = P.dur ? fmt(P.dur) : '--:--';
+  updateHeart();
+}
+function updateHeart() {
+  const show = P.trk && !P.file && !P.spot;
+  el.fav.hidden = !show;
+  if (show) el.fav.setAttribute('aria-pressed', favs.includes(P.tape.id + ':' + P.idx) ? 'true' : 'false');
+}
+function refreshDeck() {
+  el.deck.classList.toggle('ejected', !P.inserted);
+  el.ejectTxt.textContent = P.inserted ? 'นำตลับออก' : (P.trk ? 'ใส่ตลับกลับเข้าเครื่อง' : 'ยังไม่มีตลับ');
+  el.eject.disabled = !P.trk;
+  ['#kPrev','#kBack','#kPlay','#kFwd','#kNext'].forEach(s => { $(s).disabled = !P.inserted; });
+  el.seek.disabled = !P.inserted;
+  const live = !!(P.trk && P.trk.radio);
+  if (live) { ['#kPrev','#kBack','#kFwd','#kNext'].forEach(s => { $(s).disabled = true; }); el.seek.disabled = true; }
+  el.shuf.disabled = el.rep.disabled = live;
+}
+function sync() {
+  el.play.setAttribute('aria-pressed', P.playing ? 'true' : 'false');
+  el.play.setAttribute('aria-label', P.playing ? 'หยุดชั่วคราว' : 'เล่น');
+  el.playIcon.innerHTML = P.playing ? ICON_PAUSE : ICON_PLAY;
+  el.cass.classList.toggle('playing', P.playing);
+}
+function paint(p) {
+  const frac = P.dur ? Math.min(1, p / P.dur) : 0;
+  if (!dragging) { el.seek.value = Math.round(frac * 1000); el.seek.style.setProperty('--p', (frac * 100) + '%'); }
+  el.tcur.textContent = fmt(p);
+  el.counter.textContent = String(Math.floor(p) % 1000).padStart(3, '0');
+}
+function frame() {
+  if (P.inserted && P.playing) {
+    const p = curPos();
+    if (!P.file && !P.spot && P.dur > 0 && p >= P.dur - .03) onEnded(); else paint(p);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* shelf */
+function buildRail() {
+  const list = tab === 'samples' ? TAPES : tab === 'radio' ? [RADIO] : tab === 'spot' ? SPOT_LISTS : (tab === 'mine' && MINE.tracks.length ? [MINE] : []);
+  el.rail.innerHTML = ''; el.rail.hidden = !list.length;
+  list.forEach(tp => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'case' + (tp.img ? ' hasart' : ''); b.dataset.id = tp.id;
+    b.style.setProperty('--c1', tp.c1); b.style.setProperty('--c2', tp.c2);
+    b.innerHTML = (tp.img ? '<span class="art" style="background-image:url(&quot;' + esc(tp.img) + '&quot;)"></span>' : '') + '<span class="ct">' + esc(tp.name) + '</span><span class="cn"><b>' + (tp.live ? 'ON AIR' : (tp.total != null ? tp.total : tp.tracks.length) + ' เพลง') + '</b><i>' + (tp.live ? 'LIVE' : tp.total != null ? 'Spotify' : fmt(tapeTotal(tp))) + '</i></span>';
+    b.addEventListener('click', () => {
+      if (tab === 'radio') { radioTune(); } else if (tab === 'spot') { selSpot = tp.id; updateSelection(); spotLoadPlaylist(tp); } else { selTape = tp.id; updateSelection(); }
+      b.scrollIntoView({ inline:'center', block:'nearest', behavior:'smooth' });
+    });
+    el.rail.appendChild(b);
+  });
+}
+function updateSelection() {
+  el.rail.querySelectorAll('.case').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === (tab === 'mine' ? 'mine' : tab === 'radio' ? 'radio' : tab === 'spot' ? selSpot : selTape) ? 'true' : 'false'));
+  renderInfo(); renderTracks();
+}
+function renderInfo() {
+  el.info.innerHTML = '';
+  if (tab === 'favs') {
+    el.info.innerHTML = '<div><h2>เพลงโปรด</h2><p>' + favRows().length + ' เพลง</p></div>';
+  } else if (tab === 'radio') {
+    el.info.innerHTML = radioInfoHtml();
+  } else if (tab === 'spot') {
+    if (!spotAuthed()) return;
+    const n = SPOT.tracks.length;
+    el.info.innerHTML = '<div><h2>' + esc(SPOT_LISTS.length ? SPOT.name : 'Spotify') + '</h2><p>' + (n ? n + ' เพลง · ' + fmt(tapeTotal(SPOT)) : esc(spotMsg)) + '</p></div><button class="btn" type="button" data-spot-out>ออกจากระบบ</button>';
+  } else if (tab === 'mine') {
+    if (!MINE.tracks.length) return;
+    el.info.innerHTML = '<div><h2>' + esc(MINE.name) + '</h2><p>' + MINE.tracks.length + ' เพลง · ' + fmt(tapeTotal(MINE)) + '</p></div><button class="btn" type="button" data-pick>เพิ่มไฟล์</button>';
+  } else {
+    const tp = tapeById(selTape);
+    el.info.innerHTML = '<div><h2>' + esc(tp.name) + '</h2><p>' + tp.tracks.length + ' เพลง · ' + fmt(tapeTotal(tp)) + ' · แตะเพลงเพื่อใส่ตลับ</p></div>';
+  }
+}
+function favRows() {
+  return favs.map(k => { const [id, i] = k.split(':'); const tp = tapeById(id); return tp && tp.tracks[+i] ? { tape:tp, i:+i } : null; }).filter(Boolean);
+}
+function renderTracks() {
+  el.tracks.innerHTML = '';
+  let rows = [];
+  if (tab === 'radio') { radioView === 'request' ? renderRequestList() : renderRadioQueue(); return; }
+  if (tab === 'favs') rows = favRows();
+  else if (tab === 'mine') rows = MINE.tracks.map((_, i) => ({ tape:MINE, i }));
+  else if (tab === 'spot') rows = SPOT.tracks.map((_, i) => ({ tape:SPOT, i }));
+  else { const tp = tapeById(selTape); rows = tp.tracks.map((_, i) => ({ tape:tp, i })); }
+  if (!rows.length) {
+    if (tab === 'favs') el.tracks.innerHTML = '<li class="none">ยังไม่มีเพลงโปรด กดรูปหัวใจที่เพลงเพื่อเก็บไว้ที่นี่</li>';
+    else if (tab === 'spot' && spotAuthed() && spotMsg && SPOT_LISTS.length) el.tracks.innerHTML = '<li class="none">' + esc(spotMsg) + '</li>';
+    return;
+  }
+  rows.forEach(({ tape, i }) => {
+    const k = tape.tracks[i], sd = sideOf(tape, i), key = tape.id + ':' + i;
+    const cur = P.tape === tape && P.idx === i;
+    const li = document.createElement('li');
+    li.className = 'row' + (cur ? ' cur' : '');
+    li.innerHTML = '<button class="pick" type="button" data-tape="' + tape.id + '" data-i="' + i + '"><span class="no">' + sd.s + sd.n + '</span><span class="tt"><b>' + esc(k.t) + '</b><em>' + esc(k.a) + '</em></span><span class="du">' + (k.dur ? fmt(k.dur) : '--:--') + '</span></button>' +
+      (k.file || k.uri ? '' : '<button class="favb" type="button" data-fav="' + key + '" aria-pressed="' + favs.includes(key) + '" aria-label="เพลงโปรด: ' + esc(k.t) + '"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></button>');
+    el.tracks.appendChild(li);
+  });
+}
+function setTab(name) {
+  tab = name;
+  document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name ? 'true' : 'false'));
+  el.drop.hidden = !(name === 'mine' && !MINE.tracks.length);
+  el.spotPanel.hidden = !(name === 'spot' && !spotAuthed());
+  if (name === 'spot' && !spotAuthed() && ls.get('mixtape-spot-tok')) toast('อัปเดตสิทธิ์ Spotify: กรุณาเข้าสู่ระบบอีกครั้ง');
+  buildRail(); updateSelection();
+  if (name === 'spot') spotEnter();
+  if (name === 'radio') radioEnter(); else radioLeave();
+  syncReqBox();
+}
+function toggleFav(key) {
+  const i = favs.indexOf(key);
+  if (i >= 0) favs.splice(i, 1); else favs.push(key);
+  saveFavs(); renderTracks(); updateHeart();
+  if (tab === 'favs') renderInfo();
+}
+
+/* local files */
+function addFiles(list) {
+  const ok = Array.from(list || []).filter(f => (f.type && f.type.startsWith('audio/')) || /\.(mp3|m4a|wav|ogg|oga|flac|aac|opus)$/i.test(f.name));
+  if (!ok.length) { toast('ไม่พบไฟล์เสียง ลองไฟล์ mp3, m4a หรือ wav'); return; }
+  const first = MINE.tracks.length;
+  ok.forEach(f => {
+    const trk = { t: f.name.replace(/\.[^.]+$/, ''), a: 'ไฟล์ของคุณ', file: true, url: URL.createObjectURL(f), dur: 0 };
+    MINE.tracks.push(trk);
+    const probe = new Audio(); probe.preload = 'metadata'; probe.src = trk.url;
+    probe.addEventListener('loadedmetadata', () => { trk.dur = probe.duration || 0; renderInfo(); renderTracks(); buildRailKeep(); });
+  });
+  setTab('mine');
+  setTrack('mine', first, true);
+}
+function buildRailKeep() { const c = el.rail.querySelector('.cn i'); if (c && tab === 'mine') c.textContent = fmt(tapeTotal(MINE)); }
+
+/* ---------- Spotify (PKCE login + Web Playback SDK) ---------- */
+const SP_SCOPES = 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state playlist-read-private playlist-read-collaborative user-library-read';
+const SP_REPEAT = { off:'off', all:'context', one:'track' };
+const SP_PAL = [['#1db954','#0b3d1f'],['#e2417d','#2b2d5a'],['#ffc533','#b9603a'],['#7a8cff','#2a2f55'],['#17b3a6','#1c3b57'],['#ff5a22','#3a2a20']];
+let SPOT_LISTS = [], spotHidden = 0, selSpot = null, spotMsg = '', spotLoading = false;
+let spotPlayer = null, spotDev = null, spotCtx = null, spotCur = null, spotT = 0, spotPend = null, spotSdk = false;
+const ls = { get:k => { try { return localStorage.getItem(k); } catch(e) { return null; } }, set:(k,v) => { try { localStorage.setItem(k, v); } catch(e) {} }, del:k => { try { localStorage.removeItem(k); } catch(e) {} } };
+const redirectUri = () => location.origin + location.pathname;
+const spotAuthed = () => !!ls.get('mixtape-spot-tok') && ls.get('mixtape-spot-sc') === SP_SCOPES;
+const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+
+async function spLogin() {
+  const cid = el.spotCid.value.trim();
+  if (!cid) { toast('ใส่ Client ID ก่อน'); return; }
+  if (!location.protocol.startsWith('http')) { toast('ต้องเปิดผ่านเซิร์ฟเวอร์ http://127.0.0.1:5173/ (รัน node serve.mjs)'); return; }
+  ls.set('mixtape-spot-cid', cid); ls.set('mixtape-spot-sc', SP_SCOPES);
+  const v = b64u(crypto.getRandomValues(new Uint8Array(48)));
+  const ch = b64u(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)));
+  ls.set('mixtape-spot-v', v);
+  location.href = 'https://accounts.spotify.com/authorize?' + new URLSearchParams({ client_id:cid, response_type:'code', redirect_uri:redirectUri(), scope:SP_SCOPES, code_challenge_method:'S256', code_challenge:ch });
+}
+async function spTokenReq(params) {
+  let old = {}; try { old = JSON.parse(ls.get('mixtape-spot-tok')) || {}; } catch(e) {}
+  const r = await fetch('https://accounts.spotify.com/api/token', { method:'POST', headers:{ 'Content-Type':'application/x-www-form-urlencoded' }, body:new URLSearchParams({ client_id:ls.get('mixtape-spot-cid') || '', ...params }) });
+  if (!r.ok) throw new Error('token ' + r.status);
+  const j = await r.json();
+  ls.set('mixtape-spot-tok', JSON.stringify({ a:j.access_token, r:j.refresh_token || old.r, e:Date.now() + j.expires_in * 1000 - 30000 }));
+  return j.access_token;
+}
+async function spToken() {
+  let t = null; try { t = JSON.parse(ls.get('mixtape-spot-tok')); } catch(e) {}
+  if (!t) throw new Error('no auth');
+  return Date.now() < t.e ? t.a : spTokenReq({ grant_type:'refresh_token', refresh_token:t.r });
+}
+async function spApi(path, opt = {}) {
+  const tk = await spToken();
+  const r = await fetch('https://api.spotify.com/v1' + path, { ...opt, headers:{ Authorization:'Bearer ' + tk, ...(opt.body ? { 'Content-Type':'application/json' } : {}) } });
+  const txt = await r.text();
+  if (!r.ok) { let m = ''; try { m = JSON.parse(txt).error.message || ''; } catch(e) {} throw new Error(r.status + (m ? ' ' + m : '')); }
+  return txt ? JSON.parse(txt) : null;
+}
+async function spHandleRedirect() {
+  const u = new URL(location.href), code = u.searchParams.get('code'), err = u.searchParams.get('error');
+  if (!code && !err) return;
+  history.replaceState(null, '', location.pathname);
+  if (!err) {
+    try { await spTokenReq({ grant_type:'authorization_code', code, redirect_uri:redirectUri(), code_verifier:ls.get('mixtape-spot-v') || '' }); }
+    catch(e) { toast('เข้าสู่ระบบ Spotify ไม่สำเร็จ'); }
+  } else toast('Spotify: ' + err);
+  setTab('spot');
+}
+function spotLogout() { ls.del('mixtape-spot-tok'); ls.del('mixtape-spot-v'); location.reload(); }
+
+async function spotEnter() {
+  if (!spotAuthed()) return;
+  spotInitSdk();
+  if (SPOT_LISTS.length || spotLoading) return;
+  spotLoading = true; spotMsg = 'กำลังโหลดเพลย์ลิสต์…'; renderInfo();
+  try {
+    const [j, me, lk] = await Promise.all([spApi('/me/playlists?limit=50'), spApi('/me'), spApi('/me/tracks?limit=1').catch(() => ({ total:0 }))]);
+    const all = j.items.filter(Boolean), mine = all.filter(p => p.collaborative || (p.owner && p.owner.id === me.id));
+    spotHidden = all.length - mine.length;
+    SPOT_LISTS = mine.map((p, i) => ({ id:'sp:' + p.id, plId:p.id, name:p.name, c1:SP_PAL[i % SP_PAL.length][0], c2:SP_PAL[i % SP_PAL.length][1], tracks:[], img:(p.images && p.images[0] && p.images[0].url) || '', total:(p.tracks || p.items || {}).total || 0 }));
+    SPOT_LISTS.unshift({ id:'sp:liked', plId:'liked', name:'เพลงที่ถูกใจ', c1:'#ff5a8a', c2:'#3b1d5a', tracks:[], total:lk.total || 0 });
+    spotMsg = SPOT_LISTS.length ? '' : 'ยังไม่มีเพลย์ลิสต์ที่คุณสร้างเอง ลองสร้างใน Spotify แล้วรีเฟรชหน้านี้ (Spotify ไม่ให้แอปในโหมดพัฒนาอ่านเพลย์ลิสต์ของคนอื่น)';
+    if (spotHidden) toast('ซ่อน ' + spotHidden + ' เพลย์ลิสต์ที่ไม่ใช่ของคุณ (Spotify จำกัดการอ่าน)');
+    if (SPOT_LISTS.length && !selSpot) { selSpot = SPOT_LISTS[0].id; spotLoadPlaylist(SPOT_LISTS[0]); }
+  } catch(e) {
+    spotMsg = 'โหลดเพลย์ลิสต์ไม่ได้ (' + e.message + ')';
+    if (e.message.startsWith('401') || e.message === 'no auth') { ls.del('mixtape-spot-tok'); el.spotPanel.hidden = false; }
+  }
+  spotLoading = false;
+  if (tab === 'spot') { buildRail(); updateSelection(); }
+}
+async function spotLoadPlaylist(pl) {
+  const mine = SPOT = { id:'spot', name:pl.name, c1:pl.c1, c2:pl.c2, tracks:[] };
+  spotMsg = 'กำลังโหลดเพลง…'; renderInfo(); renderTracks();
+  try {
+    let j;
+    if (pl.plId === 'liked') { const [a, b] = await Promise.all([spApi('/me/tracks?limit=50'), spApi('/me/tracks?limit=50&offset=50')]); j = { items:a.items.concat(b.items) }; }
+    else { try { j = await spApi('/playlists/' + pl.plId + '/tracks?limit=100'); } catch(e) { j = await spApi('/playlists/' + pl.plId + '/items?limit=100'); } }
+    if (SPOT !== mine) return;
+    mine.tracks = j.items.map(x => x.track || x.item).filter(t => t && t.type === 'track' && !t.is_local && t.uri).slice(0, 100)
+      .map(t => { const im = (t.album && t.album.images) || []; return { t:t.name, a:t.artists.map(a => a.name).join(', '), uri:t.uri, dur:t.duration_ms / 1000, img:(im[1] || im[0] || {}).url || '' }; });
+    spotMsg = mine.tracks.length ? '' : 'เพลย์ลิสต์นี้ไม่มีเพลงที่เล่นได้';
+  } catch(e) { if (SPOT !== mine) return; spotMsg = 'โหลดเพลงไม่ได้ (' + e.message + ')'; }
+  if (tab === 'spot') { renderInfo(); renderTracks(); }
+}
+
+function spotInitSdk() {
+  if (spotSdk) return; spotSdk = true;
+  window.onSpotifyWebPlaybackSDKReady = () => {
+    spotPlayer = new Spotify.Player({ name:'สมุดเทปมิกซ์', getOAuthToken:cb => spToken().then(cb).catch(() => {}), volume });
+    spotPlayer.addListener('ready', ({ device_id }) => { spotDev = device_id; if (spotPend !== null && P.spot) { const i = spotPend; spotPend = null; spotStart(i); } });
+    spotPlayer.addListener('not_ready', () => { spotDev = null; });
+    spotPlayer.addListener('account_error', () => toast('ต้องใช้บัญชี Spotify Premium'));
+    spotPlayer.addListener('authentication_error', () => toast('Spotify หมดอายุ ลองเข้าสู่ระบบใหม่'));
+    spotPlayer.addListener('initialization_error', ({ message }) => toast('Spotify: ' + message));
+    spotPlayer.addListener('player_state_changed', spotOnState);
+    spotPlayer.connect();
+  };
+  const s = document.createElement('script'); s.src = 'https://sdk.scdn.co/spotify-player.js'; s.onerror = () => toast('โหลด Spotify SDK ไม่ได้'); document.head.appendChild(s);
+}
+function spotOnState(s) {
+  if (!s || !s.track_window || !s.track_window.current_track) return;
+  const cur = s.track_window.current_track;
+  spotCur = cur.uri;
+  if (!P.spot || P.tape !== spotCtx) return;
+  setShuffle(!!s.shuffle, false); setRepeat(['off','all','one'][s.repeat_mode] || 'off', false);
+  const i = P.tape.tracks.findIndex(t => t.uri === cur.uri);
+  if (i >= 0 && i !== P.idx) { P.idx = i; P.trk = P.tape.tracks[i]; renderTracks(); }
+  const cim = (cur.album && cur.album.images) || [];
+  if (!P.trk.img && cim.length) P.trk.img = (cim[1] || cim[0]).url;
+  P.dur = s.duration / 1000; P.trk.dur = P.dur; P.pos = s.position / 1000; spotT = performance.now(); P.playing = !s.paused;
+  setLabel(); sync(); paint(curPos());
+}
+async function spotStart(i) {
+  if (spotPlayer) spotPlayer.activateElement();
+  const tape = P.tape;
+  if (!spotPlayer || !spotDev) { spotPend = i; toast('กำลังเชื่อมต่อ Spotify…'); spotInitSdk(); return; }
+  try {
+    spotCtx = tape; spotCur = null;
+    await spApi('/me/player/play?device_id=' + spotDev, { method:'PUT', body:JSON.stringify({ uris:tape.tracks.map(t => t.uri), offset:{ position:i } }) });
+    spotCur = tape.tracks[i].uri; spotT = performance.now(); P.playing = true; sync();
+    spApi('/me/player/shuffle?state=' + shuffleOn + '&device_id=' + spotDev, { method:'PUT' }).catch(() => {});
+    spApi('/me/player/repeat?state=' + SP_REPEAT[repeatMode] + '&device_id=' + spotDev, { method:'PUT' }).catch(() => {});
+  } catch(e) { P.playing = false; sync(); toast('เล่นผ่าน Spotify ไม่ได้ (ต้องใช้บัญชี Premium)'); }
+}
+function spotPlay() {
+  if (spotPlayer) spotPlayer.activateElement();
+  if (spotPlayer && spotCtx === P.tape && spotCur === P.trk.uri) { spotPlayer.resume(); spotT = performance.now(); P.playing = true; sync(); }
+  else spotStart(P.idx);
+}
+el.spotLogin.addEventListener('click', spLogin);
+el.spotCid.value = ls.get('mixtape-spot-cid') || '';
+el.spotRedir.textContent = location.protocol.startsWith('http') ? redirectUri() : 'เปิดผ่านเซิร์ฟเวอร์ก่อน: node serve.mjs แล้วไปที่ http://127.0.0.1:5173/';
+
+/* ---------- Radio (stream จาก serve.mjs) ---------- */
+let radioInfo = null, radioMsg = '', clockSkew = 0, radioTimer = null;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const cid = Math.random().toString(36).slice(2, 12).padEnd(8, 'x');
+async function radioFetch(listening) {
+  const t0 = Date.now();
+  const r = await fetch('/api/now' + (listening ? '?l=' + cid : ''), { cache:'no-store' });
+  if (r.status === 503) throw new Error('no-music');
+  if (!r.ok) throw new Error('http ' + r.status);
+  const j = await r.json();
+  clockSkew = j.now - (t0 + Date.now()) / 2;
+  RADIO.name = j.station || RADIO.name;
+  return j;
+}
+const radioTrack = j => ({ t:j.track.title, a:j.track.artist || j.station, file:true, radio:true, url:'/stream/' + j.track.id, dur:j.track.duration, startedAt:j.track.startedAt, by:j.track.by || '', img:j.track.cover ? '/api/cover/' + j.track.id : '' });
+function radioErr(e) {
+  if (!location.protocol.startsWith('http')) return 'เปิดผ่านเซิร์ฟเวอร์ก่อน: node serve.mjs';
+  return e.message === 'no-music' ? 'ยังไม่มีเพลงในโฟลเดอร์ music (ใส่ไฟล์ .mp3 ลงไป)' : 'เชื่อมต่อสถานีไม่ได้';
+}
+async function radioRefresh() {
+  try { radioInfo = await radioFetch(); radioMsg = ''; } catch(e) { radioInfo = null; radioMsg = radioErr(e); }
+  radioRender();
+}
+function radioEnter() { radioRefresh(); clearInterval(radioTimer); radioTimer = setInterval(radioRefresh, 15000); }
+function radioLeave() { clearInterval(radioTimer); radioTimer = null; }
+async function radioTune() {
+  let j;
+  try {
+    j = await radioFetch(true);
+    const rem = j.track.startedAt + j.track.duration * 1000 - (Date.now() + clockSkew);
+    if (rem < 1500) { await sleep(Math.max(0, rem) + 400); j = await radioFetch(true); }
+  } catch(e) { toast(radioErr(e)); return; }
+  radioInfo = j; RADIO.tracks = [radioTrack(j)];
+  setTrack('radio', 0, false);
+  P.radioLive = true;
+  play();
+  radioRender();
+}
+function radioRender() { if (tab !== 'radio') return; renderInfo(); if (radioView !== 'request' || reqOpen() !== reqShownOpen) renderTracks(); }
+let radioView = 'queue', reqLib = null, reqLibMsg = '', reqShownOpen = true;
+const reqDone = new Set();
+const reqBox = $('#reqBox'), reqName = $('#reqName'), reqQ = $('#reqQ');
+reqName.value = ls.get('mixtape-req-name') || '';
+const reqOpen = () => !radioInfo || !radioInfo.requests || radioInfo.requests.open;
+const wishForm = $('#wishForm'), wishTitle = $('#wishTitle'), wishArtist = $('#wishArtist');
+let wishOpen = false;
+function syncReqBox() { reqBox.hidden = !(tab === 'radio' && radioView === 'request'); wishForm.hidden = !wishOpen; }
+const wishRow = open => '<li class="row"><div class="pick static"><span class="tt"><b>ไม่เจอเพลงที่อยากฟัง?</b><em>ขอเพลงที่ยังไม่มีในสถานี ให้ DJ ไปหามาเพิ่ม</em></span></div><button class="btn reqb" type="button" data-wish-open' + (open ? '' : ' disabled') + '>ขอเพลงนอกคลัง</button></li>';
+async function sendWish() {
+  const title = wishTitle.value.trim();
+  if (!title) { toast('กรอกชื่อเพลงก่อน'); wishTitle.focus(); return; }
+  ls.set('mixtape-req-name', reqName.value.trim());
+  try {
+    const r = await fetch('/api/request', { method:'POST', headers:{ 'Content-Type':'application/json', 'X-Req':'1' }, body:JSON.stringify({ wish:{ title, artist:wishArtist.value.trim() }, name:reqName.value.trim() }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { toast(j.error || 'ขอเพลงไม่สำเร็จ'); return; }
+    toast(j.status === 'voted' ? 'มีคนขอเพลงนี้แล้ว นับเป็นเสียงของคุณด้วย' : 'ส่งคำขอให้ DJ แล้ว');
+    wishTitle.value = ''; wishArtist.value = ''; wishOpen = false; syncReqBox();
+  } catch(e) { toast('ขอเพลงไม่สำเร็จ'); }
+}
+[wishTitle, wishArtist].forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') sendWish(); }));
+function radioInfoHtml() {
+  const asking = radioView === 'request';
+  const sub = asking ? (reqOpen() ? 'เลือกเพลงที่อยากฟัง แล้ว DJ จะเป็นคนตัดสินใจ' : 'ตอนนี้ DJ ปิดรับขอเพลงอยู่')
+    : radioInfo ? 'กำลังออกอากาศ: ' + esc(radioInfo.track.title) + (radioInfo.listeners > 0 ? ' · ' + radioInfo.listeners + ' คนกำลังฟัง' : '') : esc(radioMsg || 'กำลังเชื่อมต่อ…');
+  return '<div><h2>' + esc(radioInfo ? radioInfo.station : 'สถานีวิทยุ') + '</h2><p>' + sub + '</p></div>' +
+    '<div class="infobtns"><button class="btn" type="button" data-radio-tune>ฟังสถานี</button><button class="btn" type="button" data-req-toggle>' + (asking ? 'กลับ' : 'ขอเพลง') + '</button></div>';
+}
+async function toggleRequestView() {
+  radioView = radioView === 'request' ? 'queue' : 'request';
+  wishOpen = false;
+  syncReqBox(); renderInfo(); renderTracks();
+  if (radioView === 'request' && !reqLib) {
+    try {
+      const r = await fetch('/api/library', { cache:'no-store' });
+      if (!r.ok) throw new Error(r.status);
+      reqLib = await r.json();
+    } catch(e) { reqLibMsg = location.protocol.startsWith('http') ? 'โหลดรายชื่อเพลงไม่ได้' : 'เปิดผ่านเซิร์ฟเวอร์ก่อน: node serve.mjs'; }
+    if (tab === 'radio' && radioView === 'request') renderTracks();
+  }
+}
+function renderRequestList() {
+  if (!reqLib) { el.tracks.innerHTML = '<li class="none">' + esc(reqLibMsg || 'กำลังโหลดรายชื่อเพลง…') + '</li>'; return; }
+  const q = reqQ.value.trim().toLowerCase(), open = reqShownOpen = reqOpen();
+  const rows = reqLib.filter(t => !q || (t.title + ' ' + t.artist).toLowerCase().includes(q)).slice(0, 200);
+  el.tracks.innerHTML = wishRow(open) + (rows.length ? rows.map(t =>
+    '<li class="row"><div class="pick static"><span class="tt"><b>' + esc(t.title) + '</b><em>' + esc(t.artist) + '</em></span><span class="du">' + fmt(t.duration) + '</span></div>' +
+    '<button class="btn reqb" type="button" data-req="' + t.id + '"' + (open && !reqDone.has(t.id) ? '' : ' disabled') + '>' + (reqDone.has(t.id) ? 'ขอแล้ว' : 'ขอเพลง') + '</button></li>').join('')
+    : '<li class="none">' + (reqLib.length ? 'ไม่พบเพลงที่ค้นหา' : 'ยังไม่มีเพลงในสถานี') + '</li>');
+}
+async function sendRequest(id) {
+  ls.set('mixtape-req-name', reqName.value.trim());
+  try {
+    const r = await fetch('/api/request', { method:'POST', headers:{ 'Content-Type':'application/json', 'X-Req':'1' }, body:JSON.stringify({ id, name:reqName.value.trim() }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { toast(j.error || 'ขอเพลงไม่สำเร็จ'); return; }
+    reqDone.add(id);
+    toast(j.status === 'voted' ? 'มีคนขอเพลงนี้แล้ว นับเป็นเสียงของคุณด้วย' : 'ส่งคำขอให้ DJ แล้ว');
+    renderTracks();
+  } catch(e) { toast('ขอเพลงไม่สำเร็จ'); }
+}
+reqQ.addEventListener('input', () => { if (tab === 'radio' && radioView === 'request') renderTracks(); });
+function renderRadioQueue() {
+  if (!radioInfo) { el.tracks.innerHTML = '<li class="none">' + esc(radioMsg || 'กำลังเชื่อมต่อสถานี…') + '</li>'; return; }
+  el.tracks.innerHTML = [radioInfo.track, ...radioInfo.next].map((k, i) =>
+    '<li class="row' + (i ? '' : ' cur') + '"><div class="pick static"><span class="no">' + (i || '●') + '</span><span class="tt"><b>' + esc(k.title) + '</b><em>' + esc([k.artist || (i ? 'คิวถัดไป' : 'กำลังออกอากาศ'), k.by ? 'ขอโดย ' + k.by : ''].filter(Boolean).join(' · ')) + '</em></span><span class="du">' + fmt(k.duration) + '</span></div></li>').join('');
+}
+setInterval(async () => {
+  if (!(P.trk && P.trk.radio && P.radioLive && P.playing)) return;
+  let j; try { j = await radioFetch(true); } catch(e) { return; }
+  if (!(P.trk && P.trk.radio && P.radioLive)) return;
+  if (j.track.startedAt !== P.trk.startedAt) { radioTune(); return; }
+  const exp = (Date.now() + clockSkew - P.trk.startedAt) / 1000;
+  if (Math.abs(audio.currentTime - exp) > 2.5 && exp < P.dur - 1) audio.currentTime = exp;
+  if (JSON.stringify(j.next) !== JSON.stringify(radioInfo && radioInfo.next) || JSON.stringify(j.requests) !== JSON.stringify(radioInfo && radioInfo.requests) || j.listeners !== (radioInfo && radioInfo.listeners)) { radioInfo = j; radioRender(); }
+}, 4000);
+
+/* ---------- events ---------- */
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+document.addEventListener('click', e => {
+  const pick = e.target.closest('[data-pick]'); if (pick) { el.file.click(); return; }
+  if (e.target.closest('[data-spot-out]')) { spotLogout(); return; }
+  if (e.target.closest('[data-radio-tune]')) { radioTune(); return; }
+  if (e.target.closest('[data-req-toggle]')) { toggleRequestView(); return; }
+  if (e.target.closest('[data-wish-open]')) { wishOpen = true; wishTitle.value = wishTitle.value || reqQ.value.trim(); syncReqBox(); wishTitle.focus(); return; }
+  if (e.target.closest('[data-wish-cancel]')) { wishOpen = false; syncReqBox(); return; }
+  if (e.target.closest('[data-wish-send]')) { sendWish(); return; }
+  const rq = e.target.closest('[data-req]'); if (rq) { sendRequest(rq.dataset.req); return; }
+  const row = e.target.closest('button.pick'); if (row) { setTrack(row.dataset.tape, +row.dataset.i, true); return; }
+  const fv = e.target.closest('[data-fav]'); if (fv) toggleFav(fv.dataset.fav);
+});
+el.file.addEventListener('change', () => { addFiles(el.file.files); el.file.value = ''; });
+window.addEventListener('dragover', e => { e.preventDefault(); document.body.classList.add('dragging'); });
+window.addEventListener('dragleave', e => { if (!e.relatedTarget) document.body.classList.remove('dragging'); });
+window.addEventListener('drop', e => { e.preventDefault(); document.body.classList.remove('dragging'); addFiles(e.dataTransfer && e.dataTransfer.files); });
+
+let railT;
+el.rail.addEventListener('scroll', () => {
+  if (tab !== 'samples') return;
+  clearTimeout(railT);
+  railT = setTimeout(() => {
+    const mid = el.rail.getBoundingClientRect(); const cx = mid.left + mid.width / 2;
+    let best = null, bd = 1e9;
+    el.rail.querySelectorAll('.case').forEach(b => { const r = b.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - cx); if (d < bd) { bd = d; best = b; } });
+    if (best && best.dataset.id !== selTape) { selTape = best.dataset.id; updateSelection(); }
+  }, 120);
+});
+
+el.play.addEventListener('click', () => P.playing ? pause() : play());
+const spotLive = () => P.spot && spotPlayer && spotCtx === P.tape;
+$('#kPrev').addEventListener('click', () => { if (curPos() > 3) seekTo(0); else if (spotLive()) spotPlayer.previousTrack(); else step(-1, P.playing); });
+$('#kNext').addEventListener('click', () => { if (spotLive()) spotPlayer.nextTrack(); else setTrack(P.tape.id, nextIndex(), P.playing); });
+el.shuf.addEventListener('click', () => { setShuffle(!shuffleOn); toast(shuffleOn ? 'สุ่มเพลง: เปิด' : 'สุ่มเพลง: ปิด'); });
+el.rep.addEventListener('click', () => { setRepeat(repeatMode === 'off' ? 'all' : repeatMode === 'all' ? 'one' : 'off'); toast(el.rep.getAttribute('aria-label')); });
+$('#kBack').addEventListener('click', () => seekTo(curPos() - 10));
+$('#kFwd').addEventListener('click', () => seekTo(curPos() + 10));
+el.eject.addEventListener('click', eject);
+el.fav.addEventListener('click', () => { if (P.trk && !P.file && !P.spot) toggleFav(P.tape.id + ':' + P.idx); });
+
+el.seek.addEventListener('input', () => {
+  dragging = true;
+  const f = el.seek.value / 1000;
+  el.seek.style.setProperty('--p', (f * 100) + '%');
+  el.tcur.textContent = fmt(f * P.dur);
+});
+el.seek.addEventListener('change', () => { seekTo(el.seek.value / 1000 * P.dur); dragging = false; });
+function setVol(v) {
+  volume = v; if (master) master.gain.value = v * .9; audio.volume = v;
+  if (spotPlayer) spotPlayer.setVolume(v);
+  el.vol.style.setProperty('--p', (v * 100) + '%');
+  try { localStorage.setItem('mixtape-vol', String(v)); } catch(e) {}
+}
+el.vol.addEventListener('input', () => setVol(el.vol.value / 100));
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !e.target.closest('button,input,a,select,textarea')) { e.preventDefault(); P.playing ? pause() : play(); }
+});
+
+/* ---------- boot ---------- */
+el.vol.value = Math.round(volume * 100); setVol(volume);
+setShuffle(shuffleOn); setRepeat(repeatMode);
+setTab('samples');
+setTrack('drive', 0, false);
+spHandleRedirect();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (P.trk) setLabel(); });
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body></html>

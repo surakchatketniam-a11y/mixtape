@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ห้อง DJ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mali:wght@600&display=swap">
+<style>
+:root{--bg:#17121f;--card:#231c32;--card2:#2d2540;--ink:#f1eef8;--soft:#a9a1bd;--accent:#ff5a22;--teal:#17b3a6;--line:rgba(255,255,255,.1);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans Thai",system-ui,sans-serif}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:860px;margin:0 auto;padding:24px 16px 64px}
+h1{margin:0;font:600 26px "Mali",sans-serif}
+.sub{margin:4px 0 20px;color:var(--soft);font-size:13px}
+h2{margin:0 0 10px;font-size:15px;font-weight:600;color:var(--soft);letter-spacing:.02em}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:16px}
+.live{display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.live .t{min-width:0;flex:1 1 280px}
+.badge{display:inline-block;font:500 11px "DM Mono",monospace;letter-spacing:.08em;background:var(--accent);color:#fff;border-radius:4px;padding:1px 7px;margin-bottom:4px}
+.title{font:600 22px/1.3 "Mali",sans-serif;overflow-wrap:anywhere}
+.artist{color:var(--soft)}
+.bar{height:6px;background:var(--card2);border-radius:3px;margin:12px 0 4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent)}
+.times{display:flex;justify-content:space-between;font:12px "DM Mono",monospace;color:var(--soft)}
+.btn{border:0;border-radius:8px;padding:8px 14px;background:var(--card2);font-weight:500}
+.btn:hover{background:#3a3052}
+.btn.main{background:var(--accent);color:#fff}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn.warn{background:#5a2a3a}
+ol,ul{list-style:none;margin:0;padding:0}
+.row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .i{min-width:0;flex:1}
+.row b{display:block;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row small{display:block;color:var(--soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .d{font:12px "DM Mono",monospace;color:var(--soft);flex:none}
+.tag{font:500 10px "DM Mono",monospace;letter-spacing:.06em;border-radius:4px;padding:1px 6px;flex:none}
+.tag.dj{background:var(--teal);color:#04201d}
+.tag.auto{background:var(--card2);color:var(--soft)}
+.acts{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.head h2{margin:0}
+input[type=search]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card2);margin-bottom:8px}
+.none{color:var(--soft);padding:10px 0}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);background:#000;padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.err{background:#4a1d2a;border-radius:10px;padding:10px 14px;margin-bottom:16px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>ห้อง DJ <span id="station"></span></h1>
+  <p class="sub">เปิดได้เฉพาะเครื่อง server ผู้ฟังควบคุมเพลงไม่ได้ ที่ DJ สั่งจะมีผลกับทุกคนที่กำลังฟังภายในไม่กี่วินาที</p>
+  <div id="err" class="err" hidden></div>
+
+  <section class="card">
+    <div class="live">
+      <div class="t">
+        <span class="badge">ON AIR</span>
+        <div class="title" id="title">กำลังโหลด…</div>
+        <div class="artist" id="artist"></div>
+        <div class="artist" id="lis"></div>
+      </div>
+      <button class="btn main" id="skip" type="button">ข้ามเพลงนี้</button>
+    </div>
+    <div class="bar"><i id="fill"></i></div>
+    <div class="times"><span id="tc">0:00</span><span id="td">0:00</span></div>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2 id="reqH">คำขอเพลงจากผู้ฟัง</h2><div class="acts"><button class="btn sm" id="reqOpen" type="button">ปิดรับคำขอ</button><button class="btn sm warn" id="reqClear" type="button" hidden>ล้างคำขอ</button></div></div>
+    <ol id="reqs"></ol>
+  </section>
+
+  <section class="card" id="wishCard" hidden>
+    <div class="head"><h2 id="wishH">ขอเพลงที่ยังไม่มีในคลัง</h2></div>
+    <ol id="wishes"></ol>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2>คิวถัดไป</h2><button class="btn sm warn" id="clear" type="button" hidden>ล้างคิว DJ</button></div>
+    <ol id="queue"></ol>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2 id="libH">คลังเพลง</h2><button class="btn sm" id="reload" type="button">โหลดคลังใหม่</button></div>
+    <input type="search" id="q" placeholder="ค้นหาชื่อเพลง ศิลปิน หรือโฟลเดอร์" aria-label="ค้นหาเพลง">
+    <ul id="lib"></ul>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+let lib = [], st = null, skew = 0, toastT;
+const toast = m => { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); };
+
+async function api(path, body) {
+  const r = await fetch('/api/dj/' + path, body === undefined ? {} : { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-DJ': '1' }, body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || ('ผิดพลาด ' + r.status));
+  return j;
+}
+async function act(path, body, msg) {
+  try { await api(path, body); if (msg) toast(msg); await refresh(); } catch (e) { toast(e.message); }
+}
+
+function renderLib() {
+  const q = $('#q').value.trim().toLowerCase();
+  const rows = lib.filter(t => !q || (t.title + ' ' + t.artist + ' ' + t.folder).toLowerCase().includes(q));
+  $('#libH').textContent = 'คลังเพลง (' + rows.length + (q ? ' / ' + lib.length : '') + ')';
+  $('#lib').innerHTML = rows.length ? rows.map(t =>
+    '<li class="row"><div class="i"><b>' + esc(t.title) + '</b><small>' + esc([t.artist, t.folder].filter(Boolean).join(' · ')) + '</small></div><span class="d">' + fmt(t.duration) + '</span>' +
+    '<div class="acts"><button class="btn sm main" data-a="playnow" data-id="' + t.id + '">เล่นเลย</button><button class="btn sm" data-a="next" data-id="' + t.id + '">เล่นต่อไป</button><button class="btn sm" data-a="add" data-id="' + t.id + '">ต่อคิว</button></div></li>').join('')
+    : '<li class="none">' + (lib.length ? 'ไม่พบเพลงที่ค้นหา' : 'ยังไม่มีเพลงในโฟลเดอร์ music') + '</li>';
+}
+function renderState() {
+  if (!st) return;
+  $('#station').textContent = '· ' + st.station;
+  $('#title').textContent = st.cur.title;
+  $('#artist').textContent = [st.cur.artist, st.cur.by ? 'ขอโดย ' + st.cur.by : ''].filter(Boolean).join(' · ');
+  $('#td').textContent = fmt(st.cur.duration);
+  $('#lis').textContent = st.listeners + ' คนกำลังฟัง';
+  $('#clear').hidden = !st.dj.length;
+  $('#reqOpen').textContent = st.requestsOpen ? 'ปิดรับคำขอ' : 'เปิดรับคำขอ';
+  $('#reqH').textContent = 'คำขอเพลงจากผู้ฟัง (' + st.requests.length + ')' + (st.requestsOpen ? '' : ' · ปิดรับอยู่');
+  $('#reqClear').hidden = !(st.requests.length || st.wishes.length);
+  $('#wishCard').hidden = !st.wishes.length;
+  $('#wishH').textContent = 'ขอเพลงที่ยังไม่มีในคลัง (' + st.wishes.length + ')';
+  $('#wishes').innerHTML = st.wishes.map(w =>
+    '<li class="row"><div class="i"><b>' + esc(w.title) + '</b><small>' + esc([w.artist, 'ขอโดย ' + (w.name || 'ไม่ระบุชื่อ'), w.votes > 1 ? w.votes + ' คนขอ' : ''].filter(Boolean).join(' · ')) + '</small></div>' +
+    '<div class="acts"><button class="btn sm" data-a="wish-find" data-q="' + esc(w.title) + '">ค้นในคลัง</button><button class="btn sm warn" data-a="wish-remove" data-wid="' + w.wid + '">ลบ</button></div></li>').join('');
+  $('#reqs').innerHTML = st.requests.length ? st.requests.map(r =>
+    '<li class="row"><div class="i"><b>' + esc(r.title) + '</b><small>' + esc([r.artist, 'ขอโดย ' + (r.name || 'ไม่ระบุชื่อ'), r.votes > 1 ? r.votes + ' คนขอ' : ''].filter(Boolean).join(' · ')) + '</small></div><span class="d">' + fmt(r.duration) + '</span>' +
+    '<div class="acts"><button class="btn sm main" data-a="req-next" data-rid="' + r.rid + '">เล่นต่อไป</button><button class="btn sm" data-a="req-add" data-rid="' + r.rid + '">ต่อคิว</button><button class="btn sm warn" data-a="req-reject" data-rid="' + r.rid + '">ปฏิเสธ</button></div></li>').join('')
+    : '<li class="none">' + (st.requestsOpen ? 'ยังไม่มีคำขอ' : 'ปิดรับคำขออยู่ ผู้ฟังจะขอเพลงไม่ได้') + '</li>';
+  const items = st.dj.map((t, i) => ({ t, dj: true, i })).concat(st.next.map(t => ({ t, dj: false })));
+  $('#queue').innerHTML = items.length ? items.map(x =>
+    '<li class="row"><span class="tag ' + (x.dj ? 'dj' : 'auto') + '">' + (x.dj ? 'DJ' : 'สุ่ม') + '</span><div class="i"><b>' + esc(x.t.title) + '</b><small>' + esc([x.t.artist, x.t.by ? 'ขอโดย ' + x.t.by : ''].filter(Boolean).join(' · ')) + '</small></div><span class="d">' + fmt(x.t.duration) + '</span>' +
+    (x.dj ? '<button class="btn sm" data-a="remove" data-i="' + x.i + '" aria-label="เอาออกจากคิว">เอาออก</button>' : '') + '</li>').join('')
+    : '<li class="none">ยังไม่มีคิว</li>';
+}
+function tick() {
+  if (!st) return;
+  const pos = Math.min(st.cur.duration, Math.max(0, (Date.now() + skew - st.cur.startedAt) / 1000));
+  $('#tc').textContent = fmt(pos);
+  $('#fill').style.width = (pos / st.cur.duration * 100) + '%';
+}
+async function refresh() {
+  const t0 = Date.now();
+  try {
+    st = await api('state');
+    skew = st.now - (t0 + Date.now()) / 2;
+    $('#err').hidden = true;
+    renderState(); tick();
+  } catch (e) { $('#err').hidden = false; $('#err').textContent = e.message; }
+}
+async function loadLib() {
+  try { lib = await api('library'); renderLib(); } catch (e) { toast(e.message); }
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const a = b.dataset.a, id = b.dataset.id;
+  if (a === 'playnow') {
+    const t = lib.find(x => x.id === id);
+    if (confirm('เปลี่ยนไปเล่น "' + (t ? t.title : '') + '" ทันที? ผู้ฟังทุกคนจะเปลี่ยนตาม')) act('playnow', { id }, 'เปลี่ยนเพลงแล้ว');
+  } else if (a === 'next') act('next', { id }, 'จะเล่นเป็นเพลงถัดไป');
+  else if (a === 'add') act('add', { id }, 'ต่อคิวแล้ว');
+  else if (a === 'remove') act('remove', { index: +b.dataset.i });
+  else if (a === 'req-next') act('req-accept', { rid: +b.dataset.rid, mode: 'next' }, 'จะเล่นเป็นเพลงถัดไป');
+  else if (a === 'req-add') act('req-accept', { rid: +b.dataset.rid, mode: 'add' }, 'ต่อคิวแล้ว');
+  else if (a === 'req-reject') act('req-reject', { rid: +b.dataset.rid });
+  else if (a === 'wish-remove') act('wish-remove', { wid: +b.dataset.wid });
+  else if (a === 'wish-find') { $('#q').value = b.dataset.q; renderLib(); $('#q').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+});
+$('#reqOpen').addEventListener('click', () => act('req-open', { open: !st.requestsOpen }, st.requestsOpen ? 'ปิดรับคำขอแล้ว' : 'เปิดรับคำขอแล้ว'));
+$('#reqClear').addEventListener('click', () => { if (confirm('ล้างคำขอทั้งหมด?')) act('req-clear', {}, 'ล้างคำขอแล้ว'); });
+$('#skip').addEventListener('click', () => { if (confirm('ข้ามเพลงที่กำลังออกอากาศ? ผู้ฟังทุกคนจะเปลี่ยนตาม')) act('skip', {}, 'ข้ามเพลงแล้ว'); });
+$('#clear').addEventListener('click', () => act('clear', {}, 'ล้างคิว DJ แล้ว'));
+$('#reload').addEventListener('click', loadLib);
+$('#q').addEventListener('input', renderLib);
+
+loadLib(); refresh();
+setInterval(refresh, 3000);
+setInterval(tick, 500);
+})();
+</script>
+</body>
+</html>
