@@ -48,6 +48,13 @@ input[type=search]{width:100%;padding:10px 12px;border-radius:8px;border:1px sol
 .toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);background:#000;padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;max-width:calc(100% - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .err{background:#4a1d2a;border-radius:10px;padding:10px 14px;margin-bottom:16px}
+@media (max-width:560px){
+  .wrap{padding:16px 10px 48px}
+  .row{flex-wrap:wrap}
+  .row .acts{width:100%;justify-content:flex-start}
+  .btn{min-height:40px}
+  input[type=search]{font-size:16px}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>

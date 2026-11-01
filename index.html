@@ -200,6 +200,32 @@ body.dragging .shelf{outline:3px dashed var(--accent);outline-offset:-6px}
   .rail{padding-inline:calc(50% - 54px)}
   .vol .seek{width:96px}
 }
+@media (max-width:560px){
+  .stage{padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px));padding-top:14px}
+  .mast{margin-bottom:12px}
+  .book{padding:6px;border-radius:16px}
+  .notebook{padding-left:38px;padding-right:12px}
+  .notebook::before{left:26px}
+  .shelf{padding:16px 12px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;gap:18px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:none;white-space:nowrap;padding:10px 0 11px}
+  .deck{height:256px;padding:10px}
+  .cassette{max-width:320px}
+  .aux{gap:8px 12px}
+  .vol .seek{width:84px}
+  .mode{width:44px;height:44px}
+  .favb{width:46px}
+  .btn{min-height:40px}
+  .reqbox input,.spotbox input{font-size:16px}
+  .wishform input{flex:1 1 100%}
+  .wishform .btn{flex:1}
+}
+@media (pointer:coarse){
+  .seek{height:32px}
+  .seek::-webkit-slider-thumb{width:18px;height:26px;margin-top:-10px}
+  .seek::-moz-range-thumb{width:18px;height:26px}
+}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -1006,7 +1032,12 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-wish-cancel]')) { wishOpen = false; syncReqBox(); return; }
   if (e.target.closest('[data-wish-send]')) { sendWish(); return; }
   const rq = e.target.closest('[data-req]'); if (rq) { sendRequest(rq.dataset.req); return; }
-  const row = e.target.closest('button.pick'); if (row) { setTrack(row.dataset.tape, +row.dataset.i, true); return; }
+  const row = e.target.closest('button.pick');
+  if (row) {
+    setTrack(row.dataset.tape, +row.dataset.i, true);
+    if (window.matchMedia('(max-width:820px)').matches && P.trk) toast('กำลังเล่น: ' + P.trk.t);
+    return;
+  }
   const fv = e.target.closest('[data-fav]'); if (fv) toggleFav(fv.dataset.fav);
 });
 el.file.addEventListener('change', () => { addFiles(el.file.files); el.file.value = ''; });
