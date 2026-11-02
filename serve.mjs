@@ -8,6 +8,8 @@ import { parseFile } from 'music-metadata';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const FILE = path.join(dir, 'index.html');
+const STATIC = { '/manifest.webmanifest':'application/manifest+json', '/sw.js':'text/javascript; charset=utf-8',
+  '/icons/icon-192.png':'image/png', '/icons/icon-512.png':'image/png', '/icons/maskable-512.png':'image/png', '/icons/apple-touch-icon.png':'image/png' };
 const DJ_FILE = path.join(dir, 'dj.html');
 const MUSIC = process.env.MUSIC_DIR || path.join(dir, 'music');
 const STATION = process.env.STATION_NAME || 'สถานีเพลงของเรา';
@@ -165,6 +167,10 @@ function stream(req, res, t) {
 http.createServer(async (req, res) => {
   try {
     const p = new URL(req.url, 'http://x').pathname;
+    if (STATIC[p]) {
+      res.writeHead(200, { 'Content-Type': STATIC[p], 'Cache-Control': p === '/sw.js' ? 'no-cache' : 'public, max-age=3600' });
+      return fs.createReadStream(path.join(dir, p)).pipe(res);
+    }
     if (p === '/dj' || p.startsWith('/api/dj/')) {
       if (!isLocal(req) || !hostOk(req)) {
         res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
